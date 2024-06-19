@@ -1,5 +1,3 @@
-// This source code is subject to the terms of the Mozilla Public License 4.0 at https://mozilla.org/MPL/2.0/
-// © LonesomeTheBlue
 
 //@version=5
 indicator('3zzo.com-Options-Indicator1', overlay=true)
