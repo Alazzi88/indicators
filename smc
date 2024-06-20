@@ -1,3 +1,5 @@
+// This source code is subject to the terms of the Mozilla Public License 4.0 at https://mozilla.org/MPL/2.0/
+// © LonesomeTheBlue
 
 //@version=5
 indicator('3zzo.com-Options-Indicator1', overlay=true)
@@ -8,8 +10,8 @@ ChannelW = input.int(defval=10, title='Maximum Channel Width %', minval=1, group
 maxnumsr = input.int(defval=5, title=' Maximum Number of S/R', minval=1, maxval=10, group='Setup')
 min_strength = input.int(defval=2, title=' Minimum Strength', minval=1, maxval=10, group='Setup')
 labelloc = input.int(defval=20, title='Label Location', group='Colors', tooltip='Positive numbers reference future bars, negative numbers reference histical bars')
-linestyle = input.string(defval='Dashed', title='Line Style', options=['Solid', 'Dotted', 'Dashed'], group='Colors')
-linewidth = input.int(defval=2, title='Line Width', minval=1, maxval=4, group='Colors')
+linestyle = input.string(defval='Dotted', title='Line Style', options=['Solid', 'Dotted', 'Dashed'], group='Colors')
+linewidth = input.int(defval=1, title='Line Width', minval=1, maxval=4, group='Colors')
 resistancecolor = input.color(defval=color.orange, title='Resistance Color', group='Colors')
 supportcolor = input.color(defval=color.yellow, title='Support Color', group='Colors')
 showpp = input(false, title='Show Point Points')
@@ -22,7 +24,7 @@ float pl = ta.pivotlow(src22, prd, prd)
 plotshape(ph and showpp, text='H', style=shape.labeldown, color=na, textcolor=color.new(color.orange, 0), location=location.abovebar, offset=-prd)
 plotshape(pl and showpp, text='L', style=shape.labelup, color=na, textcolor=color.new(color.yellow, 0), location=location.belowbar, offset=-prd)
 
-Lstyle = linestyle == 'Dashed' ? line.style_dashed : linestyle == 'Solid' ? line.style_solid : line.style_dotted
+Lstyle = linestyle == 'Dashed' ? line.style_dashed : linestyle == 'small' ? line.style_solid : line.style_dotted
 
 //calculate maximum S/R channel zone width
 prdhighest = ta.highest(300)
@@ -346,11 +348,11 @@ eq_size = input.string('Tiny', 'Label Size'
 //----------------------------------------}
 //Fair Value Gaps
 //----------------------------------------{
-show_fvg = input(false, 'Fair Value Gaps'
+show_fvg = input(true, 'Fair Value Gaps'
   , group = 'Fair Value Gaps'
   , tooltip = SHOW_FVG)
   
-fvg_auto = input(true, "Auto Threshold"
+fvg_auto = input(false, "Auto Threshold"
   , group = 'Fair Value Gaps'
   , tooltip = AUTO_FVG)
 
@@ -373,7 +375,7 @@ fvg_extend = input.int(1, "Extend FVG"
 //Previous day/week high/low
 //----------------------------------------{
 //Daily
-show_pdhl = input(false, 'Daily'
+show_pdhl = input(true, 'Daily'
   , inline = 'daily'
   , group = 'Highs & Lows MTF')
 
@@ -417,18 +419,18 @@ pmhl_css = input(#2157f3, ''
 //----------------------------------------}
 //Premium/Discount zones
 //----------------------------------------{
-show_sd = input(false, 'Premium/Discount Zones'
-  , group = 'Premium & Discount Zones'
+show_sd = input(true, 'منطقة تصريف'
+  , group = 'منطقة تصريف ' 
   , tooltip = PED_ZONES)
 
 premium_css = input.color(#f23645, 'Premium Zone'
   , group = 'Premium & Discount Zones')
 
-eq_css = input.color(#b2b5be, 'Equilibrium Zone'
+eq_css = input.color(#b2b5be, ''
   , group = 'Premium & Discount Zones')
 
-discount_css = input.color(#089981, 'Discount Zone'
-  , group = 'Premium & Discount Zones')
+discount_css = input.color(#089981, 'المنطقة الذهبية للشراء'
+  , group = 'منطقة شراء')
 
 //-----------------------------------------------------------------------------}
 //Functions
@@ -1236,7 +1238,7 @@ atrrCalcMethod= input.string("Method 1",title = "atrr Calculation Methods",optio
 cloud_val = input.int(12,title = "Cloud Moving Average Length", defval = 12,minval = 5, maxval = 500,group = "trendd Continuation Signals with TP & SL")
 stopLossVal  = input.float(0.2, title="Stop Loss Percent (0 for Disabling)",defval = 0.2, minval=0,group = "trendd Continuation Signals with TP & SL")
 showBuySellSignals = input.bool(true,title="Show Buy/Sell Signals", defval=true,group = "trendd Continuation Signals with TP & SL")
-showMovingAverageCloud = input.bool(true, title="Show Cloud MA",group = "trendd Continuation Signals with TP & SL")
+// showMovingAverageCloud = input.bool(true, title="Show Cloud MA",group = "trendd Continuation Signals with TP & SL")
 
 percent(nom, div) =>
     100 * nom / div
@@ -1349,18 +1351,18 @@ changeCond = trendd != trendd[1]
 smaSrcHigh = ta.ema(high,cloud_val)
 smaSrcLow = ta.ema(low, cloud_val)
 [macdLine, signalLine, histLine] = ta.macd(close, 12, 26, 9)
-plot_high = plot(showMovingAverageCloud? smaSrcHigh : na, color = na, transp = 1, editable = false)
-plot_low  = plot(showMovingAverageCloud? smaSrcLow  : na, color = na, transp = 1, editable = false)
+// plot_high = plot(showMovingAverageCloud? smaSrcHigh : na, color = na, transp = 1, editable = false)
+// plot_low  = plot(showMovingAverageCloud? smaSrcLow  : na, color = na, transp = 1, editable = false)
 
 plotshape(longCond ? up : na, title="Uptrendd Begins", location=location.belowbar, style=shape.circle, size=size.tiny, color=color.new(color.teal,transp = 50) )
 plotshape(longCond and showBuySellSignals ? up : na, title="Call", text="Call", location=location.belowbar, style=shape.labelup, size=size.tiny, color=color.new(color.teal,transp = 50), textcolor=color.white )
 plotshape(shortCond ? dn : na, title="Downtrendd Begins", location=location.abovebar, style=shape.circle, size=size.tiny, color=color.new(color.red,transp = 50) )
 plotshape(shortCond and showBuySellSignals ? dn : na, title="Put", text="Put", location=location.abovebar, style=shape.labeldown, size=size.tiny, color=color.new(color.red,transp = 50), textcolor=color.white)
  
-fill(plot_high, plot_low, color = (macdLine > 0) and (macdLine[0] > macdLine[1]) ? color.new(color.aqua,transp = 85) : na, title = "possitive Cloud Uptrendd")
-fill(plot_high, plot_low, color = macdLine > 0 and macdLine[0] < macdLine[1]     ? color.new(color.aqua,transp = 85) : na, title = "possitive Cloud  Downtrendd")
-fill(plot_high, plot_low, color = macdLine < 0 and macdLine[0] < macdLine[1]     ? color.new(color.red,transp = 85) : na, title = "Negative Cloud  Uptrendd")
-fill(plot_high, plot_low, color = macdLine < 0 and macdLine[0] > macdLine[1]     ? color.new(color.red,transp = 85) : na, title = "Negative Cloud Downtrendd")
+// fill(plot_high, plot_low, color = (macdLine > 0) and (macdLine[0] > macdLine[1]) ? color.new(color.aqua,transp = 85) : na, title = "possitive Cloud Uptrendd")
+// fill(plot_high, plot_low, color = macdLine > 0 and macdLine[0] < macdLine[1]     ? color.new(color.aqua,transp = 85) : na, title = "possitive Cloud  Downtrendd")
+// fill(plot_high, plot_low, color = macdLine < 0 and macdLine[0] < macdLine[1]     ? color.new(color.red,transp = 85) : na, title = "Negative Cloud  Uptrendd")
+// fill(plot_high, plot_low, color = macdLine < 0 and macdLine[0] > macdLine[1]     ? color.new(color.red,transp = 85) : na, title = "Negative Cloud Downtrendd")
 mPlot = plot(ohlc4, title="", style=plot.style_circles, linewidth=0)
 
 alertcondition(changeCond, title="trendd Direction Change ", message="trendd direction has changed ! ")
@@ -1404,8 +1406,8 @@ if shortCond
 
 
 var string calcGroup = 'Calculation'
-lengthh = input.int(title='ATR Period', defval=22, group=calcGroup)
-mult = input.float(title='ATR Multiplier', step=0.1, defval=3.0, group=calcGroup)
+lengthh = input.int(title='ATR Period', defval=9, group=calcGroup)
+mult = input.float(title='ATR Multiplier', step=0.1, defval=3.9, group=calcGroup)
 useClose = input.bool(title='Use Close Price for Extremums', defval=true, group=calcGroup)
 
 var string visualGroup = 'Visuals'
@@ -1614,40 +1616,18 @@ processLinRegLevel(_show, _level, _colorL, _widthL, _styleL, _linReg, _which) =>
         if f_crossingLevel(close, pEnd - _level * dev)
             alert('LinRegChannel: ' + syminfo.ticker + ' crossing' + lbl + ' Linear Regression Standart Deviation Lower Line ' + str.tostring(_level) + ' : ' + str.tostring(pEnd - _level * dev, format.mintick))
 
-i_lrcolor_m = input.color(#f44336, 'Linear Regression Line 1      '          , inline='lrLine', group=group_linReg)
-i_lrstyle_m = input.string('Solid', '', options=['Dashed', 'Dotted', 'Solid'], inline='lrLine', group=group_linReg)
-i_lrwidth_m = input.int(0, '', minval=0                                     , inline='lrLine', group=group_linReg)
-
-if i_linreg
-    f_drawLine(bar_index - i_linregLength + 1, startPrice, bar_index, endPrice, i_trendColor ? startPrice > endPrice ? color.red : color.green : i_lrcolor_m, i_lrwidth_m, i_lrstyle_m, i_extendLines)
-
-    if i_channelLevels != 'None'
-        f_drawLabel(bar_index + levelOffset, endPrice, '' + (i_channelLevels == 'Levels (Prices)' ? ' (' + str.tostring(endPrice, format.mintick) + ')': ''), i_trendColor ? startPrice > endPrice ? color.red : color.green : i_lrcolor_m, label.style_label_left, text.align_left, true, str.tostring(endPrice, format.mintick), levelTextSize == 'Small' ? size.small : size.normal)
-        
-        if levelOffset > 9
-            f_drawLine(bar_index + 3, endPrice, bar_index + levelOffset, endPrice, i_lrcolor_m, 1, '', false)
-
-    if f_crossingLevel(close, endPrice)
-        alert('LinRegChannel: ' + syminfo.ticker + ' crossing 1ST Linear Regression Base Line : ' + str.tostring(endPrice, format.mintick))
-
-i_lrshow_1 = input.bool(true, 'StdDev'             , inline='lrLevel_1', group=group_linReg)
-i_lrvalue_1 = input.float(1., '', minval=0, step=.1, inline='lrLevel_1', group=group_linReg)
-i_lrcolor_1 = input.color(#a8adae, ''              , inline='lrLevel_1', group=group_linReg)
-i_lrstyle_1 = input.string('Solid', '', options=['Dashed', 'Dotted', 'Solid'], inline='lrLevel_1', group=group_linReg)
-i_lrwidth_1 = input.int(1, '', minval=1            , inline='lrLevel_1', group=group_linReg)
-processLinRegLevel(i_lrshow_1, i_lrvalue_1, i_lrcolor_1, i_lrwidth_1, i_lrstyle_1, i_linreg, true)
 
 i_lrshow_2 = input.bool(true, 'StdDev'             , inline='lrLevel_2', group=group_linReg)
 i_lrvalue_2 = input.float(2., '', minval=1, step=.1, inline='lrLevel_2', group=group_linReg)
 i_lrcolor_2 = input.color(#a8adae, ''              , inline='lrLevel_2', group=group_linReg)
-i_lrstyle_2 = input.string('Solid', '', options=['Dashed', 'Dotted', 'Solid'], inline='lrLevel_2', group=group_linReg)
+i_lrstyle_2 = input.string('Dashed', '', options=['Dashed', 'Dotted', 'Solid'], inline='lrLevel_2', group=group_linReg)
 i_lrwidth_2 = input.int(1, '', minval=1            , inline='lrLevel_2', group=group_linReg)
 processLinRegLevel(i_lrshow_2, i_lrvalue_2, i_lrcolor_2, i_lrwidth_2, i_lrstyle_2, i_linreg, true)
 
 i_lrshow_3 = input.bool(true, 'StdDev'             , inline='lrLevel_3', group=group_linReg)
 i_lrvalue_3 = input.float(3., '', minval=2, step=.1, inline='lrLevel_3', group=group_linReg)
 i_lrcolor_3 = input.color(#a8adae, ''              , inline='lrLevel_3', group=group_linReg)
-i_lrstyle_3 = input.string('Solid', '', options=['Dashed', 'Dotted', 'Solid'], inline='lrLevel_3', group=group_linReg)
+i_lrstyle_3 = input.string('Dashed', '', options=['Dashed', 'Dotted', 'Solid'], inline='lrLevel_3', group=group_linReg)
 i_lrwidth_3 = input.int(1, '', minval=1            , inline='lrLevel_3', group=group_linReg)
 processLinRegLevel(i_lrshow_3, i_lrvalue_3, i_lrcolor_3, i_lrwidth_3, i_lrstyle_3, i_linreg, true)
 
@@ -1655,17 +1635,6 @@ i_2lrcolor_m = input.color(#ff9800, 'Linear Regression Line 2      '
 i_2lrstyle_m = input.string('Solid', '', options=['Dashed', 'Dotted', 'Solid'], inline='2lrLine', group=group_linReg)
 i_2lrwidth_m = input.int(1, '', minval=1, inline='2lrLine', group=group_linReg)
 
-// if i_linreg2
-//     f_drawLine(bar_index - (i_shorten and i_useTF and i_showLast < linregLength2 ? i_showLast : linregLength2) + 1, startPrice2, bar_index, endPrice2, i_trendColor ? startPrice2 > endPrice2 ? color.red : color.green : i_2lrcolor_m, i_2lrwidth_m, i_2lrstyle_m, i_extendLines)
-
-//     if i_channelLevels != 'None'
-//         f_drawLabel(bar_index + levelOffset, endPrice2, 'LRL 2ND' + (i_channelLevels == 'Levels (Prices)' ? ' (' + str.tostring(endPrice2, format.mintick) + ')': ''), i_trendColor ? startPrice2 > endPrice2 ? color.red : color.green : i_2lrcolor_m, label.style_label_left, text.align_left, true, str.tostring(endPrice2, format.mintick), levelTextSize == 'Small' ? size.small : size.normal)
-        
-//         if levelOffset > 9
-//             f_drawLine(bar_index + 3, endPrice2, bar_index + levelOffset, endPrice2, i_2lrcolor_m, 1, 'Arrow', false)
-
-//     if f_crossingLevel(close, endPrice2)
-//         alert('LinRegChannel: ' + syminfo.ticker + ' crossing 2ND Linear Regression Base Line : ' + str.tostring(endPrice2, format.mintick))
 
 
 i_2lrshow_1 = input.bool(true, 'StdDev', inline='2lrLevel_1', group=group_linReg)
@@ -1689,3 +1658,46 @@ i_2lrstyle_3 = input.string('Dotted', '', options=['Dashed', 'Dotted', 'Solid'],
 i_2lrwidth_3 = input.int(1, '', minval=1            , inline='2lrLevel_3', group=group_linReg)
 processLinRegLevel(i_2lrshow_3, i_2lrvalue_3, i_2lrcolor_3, i_2lrwidth_3, i_2lrstyle_3, i_linreg2, false)
 
+
+
+
+
+
+//  
+// ---------------------------------------------------------------------------------------------- //
+// -Moving green red  -------------------------------------------------------------------------------------- //
+// ---------------------------------------------------------------------------------------------- //
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ema_1 = input.int(52, 'EMA Length', group='Setup')
+ema_2 = input.int(10, 'EMA Length (Smoothing)', group='Setup')
+//╠════════════════════════════════════════════════════════════════════════════════════════════════════════════════════╣
+//║ Calculations :
+o = ta.ema(request.security(ticker.heikinashi(syminfo.tickerid), timeframe.period, ta.ema(open, ema_1)), ema_2)
+c = ta.ema(request.security(ticker.heikinashi(syminfo.tickerid), timeframe.period, ta.ema(close, ema_1)), ema_2)
+//╠════════════════════════════════════════════════════════════════════════════════════════════════════════════════════╣
+//║ Colors :
+color_positive = input.color(color.new(#26A69A, 0), 'Positive color (Bullish)', group = 'Colors')
+color_negative = input.color(color.new(#EF5350, 0), 'Negative color (Bearish)', group = 'Colors')
+
+color_trend = c > o ? color_positive : color_negative
+//╠════════════════════════════════════════════════════════════════════════════════════════════════════════════════════╣
+//║ Plot :
+o_line = plot(o, color=na)
+c_line = plot(c, color=na)
+//╠════════════════════════════════════════════════════════════════════════════════════════════════════════════════════╣
+//║ Fill :
+fill(o_line, c_line, color.new(color_trend, 50), 'EMA + Heikin Ashi cloud')
+//╚════════════════════════════════════════════════════════════════════════════════════════════════════════════════════╝
